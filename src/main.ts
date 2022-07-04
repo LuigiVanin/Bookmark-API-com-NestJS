@@ -6,10 +6,11 @@ import { AppModule } from './app.module';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     const config = new DocumentBuilder()
-        .setTitle('Cats example')
-        .setDescription('The cats API description')
+        .setTitle('Bookmark API com NestJS')
+        .setDescription(
+            'Essa é uma API de bookmark usando NestJS. O código foi gerado com ajuda do tutorial do free-codecamp',
+        )
         .setVersion('1.0')
-        .addTag('cats')
         .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
