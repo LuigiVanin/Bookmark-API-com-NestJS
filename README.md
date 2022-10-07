@@ -8,6 +8,10 @@
 
 Essa é uma api desenvolvida usando NestJs e TypeScript, e consiste uma aplicação que salva links como bookmarks em um banco postgres. Como esse app é apenas para aprendizado utilizei um banco postgres dentro de um container Docker!
 
+## Bibliografia
+
+Esse projeto foi baseado em um [curso do free bootcamp](https://www.youtube.com/watch?v=GHTA143_b-s&t=9637s)
+
 ## Instalação ⬇️
 
 ```bash
@@ -37,10 +41,6 @@ Os unicos testes desenvolvidos nessa aplicação são os de integração ou e2e.
 # e2e tests
 $ npm run test:e2e
 ```
-
-## Bibliografia
-
-Esse projeto foi baseado em um [curso do free bootcamp](https://www.youtube.com/watch?v=GHTA143_b-s&t=9637s)
 
 ## Ferramentas Utilizadas 🛠️
 

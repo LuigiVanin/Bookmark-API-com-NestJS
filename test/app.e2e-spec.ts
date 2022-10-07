@@ -5,6 +5,7 @@ import { PrismaService } from '../src/prisma/prisma.service';
 import { AppModule } from '../src/app.module';
 import { AuthDto } from 'src/auth/dto';
 import { EditUserDto } from 'src/user/dto';
+import { CreateBookmark } from 'src/bookmark/dto';
 
 describe('App e2e', () => {
     let app: INestApplication;
@@ -21,11 +22,11 @@ describe('App e2e', () => {
         );
 
         await app.init();
-        await app.listen(3333);
+        await app.listen(8080);
 
         prisma = app.get(PrismaService);
         await prisma.cleanDb();
-        pactum.request.setBaseUrl('http://localhost:3333');
+        pactum.request.setBaseUrl('http://localhost:8080');
     });
 
     afterAll(() => {
@@ -132,9 +133,72 @@ describe('App e2e', () => {
     });
 
     describe('Bookmark', () => {
-        describe('Create Bookmark', () => {});
-        describe('Get Bookmarks', () => {});
-        describe('Create Bookmark by Id', () => {});
+        const dto: CreateBookmark = {
+            title: 'cute rabbit video - 480p',
+            description: 'Thats a cute rabbit video, please enjoy',
+            link: 'https://www.youtube.com/watch?v=dpvUQagTRHM',
+        };
+        describe('Create Bookmark', () => {
+            it('create bookmark sucessfully', () => {
+                return pactum
+                    .spec()
+                    .post('/bookmark')
+                    .withHeaders({
+                        Authorization: 'Bearer $S{userAt}',
+                    })
+                    .withBody(dto)
+                    .expectStatus(201)
+                    .expectBodyContains(dto.title)
+                    .expectBodyContains(dto.description)
+                    .expectBodyContains(dto.link);
+            });
+
+            it('trying to insert bookmark with the same title 4 the same user', () => {
+                return pactum
+                    .spec()
+                    .post('/bookmark')
+                    .withHeaders({
+                        Authorization: 'Bearer $S{userAt}',
+                    })
+                    .withBody(dto)
+                    .expectStatus(403);
+            });
+
+            it('trying to insert bookmark with blank title', () => {
+                const tmp = { ...dto };
+                delete tmp.title;
+                return pactum
+                    .spec()
+                    .post('/bookmark')
+                    .withHeaders({
+                        Authorization: 'Bearer $S{userAt}',
+                    })
+                    .withBody(tmp)
+                    .expectStatus(400);
+            });
+        });
+        describe('Get Bookmarks', () => {
+            it('get all bookmarks from a user', () => {
+                return pactum
+                    .spec()
+                    .get('/bookmark')
+                    .withHeaders({
+                        Authorization: 'Bearer $S{userAt}',
+                    })
+                    .expectStatus(200);
+            });
+        });
+        describe('Get Bookmark by Id', () => {
+            it('get inexistent bookmark from a user by id', () => {
+                return pactum
+                    .spec()
+                    .get('/bookmark/19029283')
+                    .withHeaders({
+                        Authorization: 'Bearer $S{userAt}',
+                    })
+                    .expectStatus(404);
+            });
+        });
         describe('Edit Bookmark', () => {});
         describe('Delete Bookmark', () => {});
     });
